@@ -1,5 +1,6 @@
 #pragma once
 #include <juce_gui_extra/juce_gui_extra.h>
+#include <juce_audio_processors/juce_audio_processors.h>
 
 //==============================================================================
 /*
@@ -31,9 +32,23 @@ private:
 
     void fileDragExit(const juce::StringArray &files) override;
 
+    /**
+     * @brief A helper function for extracting plugin info for any given type
+     * @param plugin
+     * @return
+     */
+    juce::String getPluginInfo(const juce::File& plugin);
+
     FileDroppedState m_state {idle};
 
     juce::File m_lastDroppedFile;
+
+    // Plugin format functionality
+    juce::KnownPluginList m_pluginList;
+    juce::OwnedArray<juce::PluginDescription> m_descriptions;
+    juce::AudioPluginFormatManager m_pluginFormatManager;
+
+    juce::String m_pluginInfo;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (MainComponent)
 };

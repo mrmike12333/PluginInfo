@@ -42,8 +42,11 @@ juce_add_gui_app(GuiAppExample
     # ICON_SMALL ...
     # DOCUMENT_EXTENSIONS ...           # Specify file extensions that should be associated with this app
     # COMPANY_NAME ...                  # Specify the name of the app's author
-    PRODUCT_NAME "Gui App Example")     # The name of the final executable, which can differ from the target name
-
+    PRODUCT_NAME "Gui App Example"      # The name of the final executable, which can differ from the target name
+    PLUGINHOST_AU TRUE
+    PLUGINHOST_VST3 TRUE
+    PLUGINHOST_VST TRUE
+)
 # `juce_generate_juce_header` will create a JuceHeader.h for a given target, which will be generated
 # into your build tree. This should be included with `#include <JuceHeader.h>`. The include path for
 # this header will be automatically added to the target. The main function of the JuceHeader is to
@@ -75,7 +78,10 @@ target_compile_definitions(GuiAppExample
         JUCE_WEB_BROWSER=0  # If you remove this, add `NEEDS_WEB_BROWSER TRUE` to the `juce_add_gui_app` call
         JUCE_USE_CURL=0     # If you remove this, add `NEEDS_CURL TRUE` to the `juce_add_gui_app` call
         JUCE_APPLICATION_NAME_STRING="$<TARGET_PROPERTY:GuiAppExample,JUCE_PRODUCT_NAME>"
-        JUCE_APPLICATION_VERSION_STRING="$<TARGET_PROPERTY:GuiAppExample,JUCE_VERSION>")
+        JUCE_APPLICATION_VERSION_STRING="$<TARGET_PROPERTY:GuiAppExample,JUCE_VERSION>"
+#        JUCE_PLUGINHOST_AU=TRUE
+#        JUCE_PLUGINHOST_VST3=TRUE
+)
 
 # If your target needs extra binary assets, you can add them here. The first argument is the name of
 # a new static library target that will include all the binary resources. There is an optional
@@ -96,6 +102,7 @@ target_link_libraries(GuiAppExample
     PRIVATE
         # GuiAppData            # If we'd created a binary data target, we'd link to it here
         juce::juce_gui_extra
+        juce::juce_audio_processors
     PUBLIC
         juce::juce_recommended_config_flags
         juce::juce_recommended_lto_flags

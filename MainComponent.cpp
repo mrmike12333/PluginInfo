@@ -4,6 +4,8 @@
 MainComponent::MainComponent()
 {
     setSize (600, 400);
+    m_pluginFormatManager.addDefaultFormats();
+    jassert(m_pluginFormatManager.getNumFormats() > 0);
 }
 
 //==============================================================================
@@ -34,9 +36,9 @@ void MainComponent::paint (juce::Graphics& g)
     g.setColour (juce::Colours::white);
 
     const juce::String textToDraw = m_lastDroppedFile != juce::File() ?
-        m_lastDroppedFile.getFullPathName() : "Drag in a plugin to get started!";
+        m_pluginInfo : "Drag in a plugin to get started!";
 
-    g.drawText (textToDraw, getLocalBounds(), juce::Justification::centred, true);
+    g.drawMultiLineText(textToDraw, 0, 12, getWidth(), juce::Justification::left);
 }
 
 void MainComponent::resized()
@@ -84,7 +86,19 @@ void MainComponent::filesDropped(const juce::StringArray &files, int, int)
     m_state = fileDropped;
 
     // TODO: Replace with load file info logic
+    m_descriptions.clear();
+    m_pluginList.scanAndAddDragAndDroppedFiles(m_pluginFormatManager, files, m_descriptions);
+
     m_lastDroppedFile = juce::File(files[0]);
+
+    if (const auto* lastDescription = m_descriptions.getLast())
+    {
+        if (const auto xml = lastDescription->createXml())
+        {
+            m_pluginInfo = xml->toString();
+        }
+    }
+
     repaint();
 }
 
@@ -92,4 +106,8 @@ void MainComponent::fileDragExit(const juce::StringArray &)
 {
     m_state = idle;
     repaint();
+}
+
+juce::String MainComponent::getPluginInfo(const juce::File &plugin)
+{
 }
