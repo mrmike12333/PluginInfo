@@ -32,13 +32,6 @@ private:
 
     void fileDragExit(const juce::StringArray &files) override;
 
-    /**
-     * @brief A helper function for extracting plugin info for any given type
-     * @param plugin
-     * @return
-     */
-    juce::String getPluginInfo(const juce::File& plugin);
-
     FileDroppedState m_state {idle};
 
     juce::File m_lastDroppedFile;
@@ -48,7 +41,7 @@ private:
     juce::OwnedArray<juce::PluginDescription> m_descriptions;
     juce::AudioPluginFormatManager m_pluginFormatManager;
 
-    juce::String m_pluginInfo;
+    juce::Label m_pluginInfoLabel {"PluginInfoLabel"};
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (MainComponent)
 };

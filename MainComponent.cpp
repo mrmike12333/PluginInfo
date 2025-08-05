@@ -6,6 +6,11 @@ MainComponent::MainComponent()
     setSize (600, 400);
     m_pluginFormatManager.addDefaultFormats();
     jassert(m_pluginFormatManager.getNumFormats() > 0);
+
+    addAndMakeVisible(m_pluginInfoLabel);
+    m_pluginInfoLabel.setFont(juce::FontOptions(15.0f));
+    m_pluginInfoLabel.setColour(juce::Label::ColourIds::textColourId, juce::Colours::white);
+    m_pluginInfoLabel.setEditable(false);
 }
 
 //==============================================================================
@@ -32,18 +37,17 @@ void MainComponent::paint (juce::Graphics& g)
 
     g.drawRect(getLocalBounds(), 2);
 
-    g.setFont (juce::FontOptions (16.0f));
-    g.setColour (juce::Colours::white);
-
-    const juce::String textToDraw = m_lastDroppedFile != juce::File() ?
-        m_pluginInfo : "Drag in a plugin to get started!";
-
-    g.drawMultiLineText(textToDraw, 0, 12, getWidth(), juce::Justification::left);
+    if (m_state == idle)
+    {
+        g.setFont (juce::FontOptions (16.0f));
+        g.setColour (juce::Colours::white);
+        g.drawText("Drag in a plugin to get started!", getLocalBounds(), juce::Justification::centred);
+    }
 }
 
 void MainComponent::resized()
 {
-
+    m_pluginInfoLabel.setBounds(getLocalBounds().reduced(5));
 }
 
 bool MainComponent::isInterestedInFileDrag(const juce::StringArray &files)
@@ -85,7 +89,6 @@ void MainComponent::filesDropped(const juce::StringArray &files, int, int)
 
     m_state = fileDropped;
 
-    // TODO: Replace with load file info logic
     m_descriptions.clear();
     m_pluginList.scanAndAddDragAndDroppedFiles(m_pluginFormatManager, files, m_descriptions);
 
@@ -95,7 +98,7 @@ void MainComponent::filesDropped(const juce::StringArray &files, int, int)
     {
         if (const auto xml = lastDescription->createXml())
         {
-            m_pluginInfo = xml->toString();
+            m_pluginInfoLabel.setText(xml->toString(), juce::dontSendNotification);
         }
     }
 
@@ -106,8 +109,4 @@ void MainComponent::fileDragExit(const juce::StringArray &)
 {
     m_state = idle;
     repaint();
-}
-
-juce::String MainComponent::getPluginInfo(const juce::File &plugin)
-{
 }
