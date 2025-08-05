@@ -7,10 +7,7 @@ MainComponent::MainComponent()
     m_pluginFormatManager.addDefaultFormats();
     jassert(m_pluginFormatManager.getNumFormats() > 0);
 
-    addAndMakeVisible(m_pluginInfoLabel);
-    m_pluginInfoLabel.setFont(juce::FontOptions(15.0f));
-    m_pluginInfoLabel.setColour(juce::Label::ColourIds::textColourId, juce::Colours::white);
-    m_pluginInfoLabel.setEditable(false);
+    addAndMakeVisible(m_descriptionView);
 }
 
 //==============================================================================
@@ -47,7 +44,7 @@ void MainComponent::paint (juce::Graphics& g)
 
 void MainComponent::resized()
 {
-    m_pluginInfoLabel.setBounds(getLocalBounds().reduced(5));
+    m_descriptionView.setBounds(getLocalBounds().reduced(5));
 }
 
 bool MainComponent::isInterestedInFileDrag(const juce::StringArray &files)
@@ -96,9 +93,9 @@ void MainComponent::filesDropped(const juce::StringArray &files, int, int)
 
     if (const auto* lastDescription = m_descriptions.getLast())
     {
-        if (const auto xml = lastDescription->createXml())
+        if (auto xml = lastDescription->createXml())
         {
-            m_pluginInfoLabel.setText(xml->toString(), juce::dontSendNotification);
+            m_descriptionView.setDescription(std::move(xml));
         }
     }
 
