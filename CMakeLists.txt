@@ -8,7 +8,8 @@
 # that the installed CMake will be able to understand the following CMakeLists, and ensures that
 # CMake's behaviour is compatible with the named version. This is a standard CMake command, so more
 # information can be found in the CMake docs.
-
+# TODO: Rework this to reflect the actual project
+# TODO: Add a clang-format file
 cmake_minimum_required(VERSION 3.22)
 
 # The top-level CMakeLists.txt file for a project must contain a literal, direct call to the
@@ -62,9 +63,9 @@ juce_add_gui_app(GuiAppExample
 
 target_sources(GuiAppExample
     PRIVATE
-        Main.cpp
-        MainComponent.cpp
-        DescriptionView.cpp)
+        src/Main.cpp
+        src/MainComponent.cpp
+        src/DescriptionView.cpp)
 
 # `target_compile_definitions` adds some preprocessor definitions to our target. In a Projucer
 # project, these might be passed in the 'Preprocessor Definitions' field. JUCE modules also make use

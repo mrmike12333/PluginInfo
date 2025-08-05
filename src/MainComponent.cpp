@@ -3,6 +3,7 @@
 //==============================================================================
 MainComponent::MainComponent()
 {
+    // TODO: have minimum bounds on width/height
     setSize (600, 400);
     m_pluginFormatManager.addDefaultFormats();
     jassert(m_pluginFormatManager.getNumFormats() > 0);
@@ -15,6 +16,7 @@ void MainComponent::paint (juce::Graphics& g)
 {
     g.fillAll (getLookAndFeel().findColour (juce::ResizableWindow::backgroundColourId));
 
+    // TODO: Change ui feedback for a drag and drop action
     switch (m_state)
     {
         case idle:

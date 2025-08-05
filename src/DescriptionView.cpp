@@ -19,9 +19,6 @@ void DescriptionView::setDescription(std::unique_ptr<juce::XmlElement> descripti
 
 void DescriptionView::paint(juce::Graphics &g)
 {
-    g.setFont(juce::FontOptions(15.0f));
-    g.setColour(juce::Colours::white);
-
     m_formattedDescription.draw(g, getLocalBounds().toFloat());
 }
 
