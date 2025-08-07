@@ -60,7 +60,7 @@ bool MainComponent::isInterestedInFileDrag(const juce::StringArray &files)
     }
 
     const auto fileToDrop = juce::File(files[0]);
-    const juce::StringArray availableFormats = {".vst3", ".dll", ".component", ".so", ".lv2"};
+    const juce::StringArray availableFormats = { ".vst3", ".component" };
 
     if (availableFormats.contains(fileToDrop.getFileExtension(), true))
     {
@@ -89,6 +89,8 @@ void MainComponent::filesDropped(const juce::StringArray &files, int, int)
     m_state = fileDropped;
 
     m_descriptions.clear();
+
+    // TODO: Provide error handling and user feedback
     m_pluginList.scanAndAddDragAndDroppedFiles(m_pluginFormatManager, files, m_descriptions);
 
     m_lastDroppedFile = juce::File(files[0]);

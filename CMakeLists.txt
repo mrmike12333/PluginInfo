@@ -10,7 +10,7 @@ juce_add_gui_app(PluginInfo
     # ICON_SMALL ...
     # DOCUMENT_EXTENSIONS ...           # Specify file extensions that should be associated with this app
     # COMPANY_NAME ...                  # Specify the name of the app's author
-    PRODUCT_NAME "Plugin Info"      # The name of the final executable, which can differ from the target name
+    PRODUCT_NAME "Plugin Info"          # The name of the final executable, which can differ from the target name
     PLUGINHOST_AU TRUE
     PLUGINHOST_VST3 TRUE
     PLUGINHOST_VST TRUE
