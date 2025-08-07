@@ -8,7 +8,7 @@
     This component lives inside our window, and this is where you should put all
     your controls and content.
 */
-class MainComponent final : public juce::Component, public juce::FileDragAndDropTarget
+class MainComponent final : public juce::Component, public juce::FileDragAndDropTarget, public juce::Value::Listener
 {
 public:
     MainComponent();
@@ -33,7 +33,9 @@ private:
 
     void fileDragExit(const juce::StringArray &files) override;
 
-    FileDroppedState m_state {idle};
+    void valueChanged(juce::Value &value) override;
+
+    void savePluginDescriptionToFile(const juce::String &description);
 
     juce::File m_lastDroppedFile;
 
@@ -43,6 +45,11 @@ private:
     juce::AudioPluginFormatManager m_pluginFormatManager;
 
     DescriptionView m_descriptionView;
+    juce::TextButton m_clearButton{"Clear"};
+    juce::TextButton m_copyButton{"Copy"};
+    juce::TextButton m_saveButton{"Save"};
+
+    juce::Value m_state;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (MainComponent)
 };

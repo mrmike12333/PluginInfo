@@ -28,6 +28,7 @@ target_compile_definitions(PluginInfo
         JUCE_APPLICATION_NAME_STRING="$<TARGET_PROPERTY:PluginInfo,JUCE_PRODUCT_NAME>"
         JUCE_APPLICATION_VERSION_STRING="$<TARGET_PROPERTY:PluginInfo,JUCE_VERSION>"
         JUCE_PLUGINHOST_VST3=1
+        JUCE_MODAL_LOOPS_PERMITTED=1
 )
 
 target_link_libraries(PluginInfo

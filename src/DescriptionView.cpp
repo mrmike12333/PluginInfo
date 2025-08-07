@@ -1,9 +1,5 @@
 #include "DescriptionView.h"
 
-DescriptionView::DescriptionView()
-{
-}
-
 void DescriptionView::setDescription(std::unique_ptr<juce::XmlElement> description)
 {
     if (!description)
@@ -15,6 +11,20 @@ void DescriptionView::setDescription(std::unique_ptr<juce::XmlElement> descripti
     m_description = std::move(description);
 
     m_formattedDescription = convertDescriptionToText();
+}
+
+juce::String DescriptionView::getCurrentDescription() const
+{
+    juce::String returnString;
+
+    if (!m_description)
+    {
+        return returnString;
+    }
+
+    returnString = m_description->toString();
+
+    return returnString;
 }
 
 void DescriptionView::paint(juce::Graphics &g)

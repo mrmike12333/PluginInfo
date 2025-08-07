@@ -13,7 +13,36 @@ MainComponent::MainComponent()
         juce::Logger::outputDebugString(format->getName());
     }
 
-    addAndMakeVisible(m_descriptionView);
+    addChildComponent(m_descriptionView);
+    addAndMakeVisible(m_clearButton);
+    addAndMakeVisible(m_copyButton);
+    addAndMakeVisible(m_saveButton);
+
+    m_clearButton.onClick = [this]()
+    {
+        m_state = idle;
+    };
+
+    m_copyButton.onClick = [this]()
+    {
+        const auto copiedString = m_descriptionView.getCurrentDescription();
+
+        if (copiedString.isNotEmpty())
+        {
+            juce::SystemClipboard::copyTextToClipboard(copiedString);
+        }
+
+        // TODO: Tell user their string is copied to clipboard
+    };
+
+    m_saveButton.onClick = [this]()
+    {
+        const auto pluginDescription = m_descriptionView.getCurrentDescription();
+        savePluginDescriptionToFile(pluginDescription);
+    };
+
+    m_state.addListener(this);
+    m_state = idle;
 }
 
 //==============================================================================
@@ -22,7 +51,7 @@ void MainComponent::paint (juce::Graphics& g)
     g.fillAll (getLookAndFeel().findColour (juce::ResizableWindow::backgroundColourId));
 
     // TODO: Change ui feedback for a drag and drop action
-    switch (m_state)
+    switch (static_cast<FileDroppedState>(static_cast<int>(m_state.getValue())))
     {
         case idle:
         default:
@@ -51,7 +80,29 @@ void MainComponent::paint (juce::Graphics& g)
 
 void MainComponent::resized()
 {
-    m_descriptionView.setBounds(getLocalBounds().reduced(5));
+    constexpr int padding = 4;
+    auto bounds = getLocalBounds().reduced(padding);
+    m_descriptionView.setBounds(bounds);
+
+    constexpr int buttonSize = 75;
+    auto buttonArea = bounds.removeFromBottom(buttonSize);
+
+    // Defined from right to left
+    const std::vector<std::reference_wrapper<juce::TextButton>> buttonsInBar
+    {
+        m_clearButton,
+        m_saveButton,
+        m_copyButton
+    };
+
+    // Buttons will overrun bounds
+    jassert(static_cast<int>(buttonsInBar.size() * buttonSize) <= bounds.getHeight());
+
+    for (const auto button : buttonsInBar)
+    {
+        button.get().setBounds(buttonArea.removeFromRight(buttonSize));
+        buttonArea.removeFromRight(padding);
+    }
 }
 
 bool MainComponent::isInterestedInFileDrag(const juce::StringArray &files)
@@ -59,7 +110,6 @@ bool MainComponent::isInterestedInFileDrag(const juce::StringArray &files)
     // only handle a single file for now
     if (files.size() > 1 || files.isEmpty())
     {
-        repaint();
         m_state = dragEnterInvalid;
         return false;
     }
@@ -70,12 +120,10 @@ bool MainComponent::isInterestedInFileDrag(const juce::StringArray &files)
     if (availableFormats.contains(fileToDrop.getFileExtension(), true))
     {
         m_state = dragEnterValid;
-        repaint();
         return true;
     }
 
     m_state = dragEnterInvalid;
-    repaint();
     return false;
 }
 
@@ -90,8 +138,6 @@ void MainComponent::filesDropped(const juce::StringArray &files, int, int)
     {
         return;
     }
-
-    m_state = fileDropped;
 
     m_descriptions.clear();
 
@@ -108,11 +154,65 @@ void MainComponent::filesDropped(const juce::StringArray &files, int, int)
         }
     }
 
-    repaint();
+    m_state = fileDropped;
 }
 
 void MainComponent::fileDragExit(const juce::StringArray &)
 {
     m_state = idle;
-    repaint();
+}
+
+void MainComponent::valueChanged(juce::Value &value)
+{
+    if (value.refersToSameSourceAs(m_state))
+    {
+        const auto state = static_cast<FileDroppedState>(static_cast<int>(value.getValue()));
+
+        switch (state)
+        {
+            case idle:
+                m_lastDroppedFile = juce::File();
+                m_descriptionView.setVisible(false);
+                m_clearButton.setEnabled(false);
+                m_copyButton.setEnabled(false);
+                m_saveButton.setEnabled(false);
+                break;
+            case dragEnterValid:
+            case dragEnterInvalid:
+                break;
+            case fileDropped:
+                m_descriptionView.setVisible(true);
+                m_clearButton.setEnabled(true);
+                m_copyButton.setEnabled(true);
+                m_saveButton.setEnabled(true);
+                break;
+        }
+
+        repaint();
+    }
+}
+
+void MainComponent::savePluginDescriptionToFile(const juce::String &description)
+{
+    juce::FileChooser fileChooser = {"Save Plugin description",
+    juce::File::getSpecialLocation (juce::File::userDocumentsDirectory),
+    "*.xml"
+    };
+
+    if (fileChooser.browseForFileToSave(true))
+    {
+        const juce::File locationToWrite = fileChooser.getResult();
+
+        if (locationToWrite != juce::File())
+        {
+            if (locationToWrite.replaceWithText(description))
+            {
+                // TODO: Tell user that it worked
+            }
+            else
+            {
+                // TODO: Tell user that it didn't work
+            }
+        }
+    }
 }
