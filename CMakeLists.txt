@@ -12,8 +12,6 @@ juce_add_gui_app(PluginInfo
     # COMPANY_NAME ...                  # Specify the name of the app's author
     PRODUCT_NAME "Plugin Info"          # The name of the final executable, which can differ from the target name
     PLUGINHOST_AU TRUE
-    PLUGINHOST_VST3 TRUE
-    PLUGINHOST_VST TRUE
 )
 
 target_sources(PluginInfo
@@ -29,6 +27,7 @@ target_compile_definitions(PluginInfo
         JUCE_USE_CURL=0     # If you remove this, add `NEEDS_CURL TRUE` to the `juce_add_gui_app` call
         JUCE_APPLICATION_NAME_STRING="$<TARGET_PROPERTY:PluginInfo,JUCE_PRODUCT_NAME>"
         JUCE_APPLICATION_VERSION_STRING="$<TARGET_PROPERTY:PluginInfo,JUCE_VERSION>"
+        JUCE_PLUGINHOST_VST3=1
 )
 
 target_link_libraries(PluginInfo

@@ -6,7 +6,12 @@ MainComponent::MainComponent()
     // TODO: have minimum bounds on width/height
     setSize (600, 400);
     m_pluginFormatManager.addDefaultFormats();
-    jassert(m_pluginFormatManager.getNumFormats() > 0);
+
+    juce::Logger::outputDebugString("---- Checking for available plugin formats:");
+    for (const auto* format : m_pluginFormatManager.getFormats())
+    {
+        juce::Logger::outputDebugString(format->getName());
+    }
 
     addAndMakeVisible(m_descriptionView);
 }
