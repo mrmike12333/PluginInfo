@@ -144,6 +144,13 @@ void MainComponent::filesDropped(const juce::StringArray &files, int, int)
     // TODO: Provide error handling and user feedback
     m_pluginList.scanAndAddDragAndDroppedFiles(m_pluginFormatManager, files, m_descriptions);
 
+    if (m_descriptions.isEmpty())
+    {
+        // Loading the plugin failed
+        m_state = idle;
+        return;
+    }
+
     m_lastDroppedFile = juce::File(files[0]);
 
     if (const auto* lastDescription = m_descriptions.getLast())
@@ -152,6 +159,12 @@ void MainComponent::filesDropped(const juce::StringArray &files, int, int)
         {
             m_descriptionView.setDescription(std::move(xml));
         }
+    }
+    else
+    {
+        // Loading the plugin failed
+        m_state = idle;
+        return;
     }
 
     m_state = fileDropped;
