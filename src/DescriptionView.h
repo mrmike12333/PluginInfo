@@ -2,7 +2,6 @@
 #include "juce_gui_basics/juce_gui_basics.h"
 
 class DescriptionView final : public juce::Component {
-
     public:
     DescriptionView() = default;
 
@@ -20,7 +19,7 @@ class DescriptionView final : public juce::Component {
 private:
     void paint (juce::Graphics&) override;
 
-    juce::AttributedString convertDescriptionToText();
+    juce::AttributedString convertDescriptionToText() const;
 
     juce::AttributedString m_formattedDescription;
     std::unique_ptr<juce::XmlElement> m_description;

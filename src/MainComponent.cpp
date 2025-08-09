@@ -7,11 +7,13 @@ MainComponent::MainComponent()
     setSize (600, 400);
     m_pluginFormatManager.addDefaultFormats();
 
-    juce::Logger::outputDebugString("---- Checking for available plugin formats:");
+    juce::Logger::outputDebugString("---- Checking for available plugin formats: ----");
     for (const auto* format : m_pluginFormatManager.getFormats())
     {
         juce::Logger::outputDebugString(format->getName());
     }
+
+    setupLookAndFeel();
 
     addChildComponent(m_descriptionView);
     addAndMakeVisible(m_clearButton);
@@ -54,6 +56,7 @@ void MainComponent::paint (juce::Graphics& g)
     switch (static_cast<FileDroppedState>(static_cast<int>(m_state.getValue())))
     {
         case idle:
+        case fileDropped:
         default:
             g.setColour(juce::Colours::transparentBlack);
             break;
@@ -62,9 +65,6 @@ void MainComponent::paint (juce::Graphics& g)
             break;
         case dragEnterInvalid:
             g.setColour(juce::Colours::red);
-            break;
-        case fileDropped:
-            g.setColour(juce::Colours::cyan);
             break;
     }
 
@@ -80,7 +80,7 @@ void MainComponent::paint (juce::Graphics& g)
 
 void MainComponent::resized()
 {
-    constexpr int padding = 4;
+    constexpr int padding = 5;
     auto bounds = getLocalBounds().reduced(padding);
     m_descriptionView.setBounds(bounds);
 
@@ -203,6 +203,28 @@ void MainComponent::valueChanged(juce::Value &value)
 
         repaint();
     }
+}
+
+void MainComponent::setupLookAndFeel()
+{
+    auto& lnf = getLookAndFeel();
+    const juce::Colour background = juce::Colour::fromRGB(125, 145, 126);
+    const juce::Colour backgroundDark = juce::Colour::fromRGB(84, 112, 86);
+    const juce::Colour backgroundLight = juce::Colour::fromRGB(187, 198, 188);
+    const juce::Colour primary = juce::Colour::fromRGB(255, 255, 255);
+    const juce::Colour textMuted = juce::Colour::fromRGB(214, 210, 210);
+
+    // Apply colours
+    lnf.setColour(juce::ResizableWindow::ColourIds::backgroundColourId, background);
+
+    lnf.setColour(juce::TextButton::ColourIds::buttonColourId, backgroundLight);
+    lnf.setColour(juce::TextButton::ColourIds::textColourOffId, backgroundDark);
+    lnf.setColour(juce::TextButton::ColourIds::textColourOnId, backgroundDark);
+    lnf.setColour(juce::ComboBox::outlineColourId, backgroundDark);
+
+    // Piggybacking off existing colour IDs for description view
+    lnf.setColour(juce::Label::ColourIds::textColourId, textMuted);
+    lnf.setColour(juce::Label::ColourIds::textWhenEditingColourId, primary);
 }
 
 void MainComponent::savePluginDescriptionToFile(const juce::String &description)

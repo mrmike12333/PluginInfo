@@ -32,7 +32,7 @@ void DescriptionView::paint(juce::Graphics &g)
     m_formattedDescription.draw(g, getLocalBounds().toFloat());
 }
 
-juce::AttributedString DescriptionView::convertDescriptionToText()
+juce::AttributedString DescriptionView::convertDescriptionToText() const
 {
     juce::AttributedString formattedString;
 
@@ -45,8 +45,8 @@ juce::AttributedString DescriptionView::convertDescriptionToText()
     juce::Logger::outputDebugString(fullString);
 
     // TODO: Change to a nicer colourScheme + introduce look and feel
-    const juce::Colour nameColour = juce::Colours::white;
-    const juce::Colour valueColour = juce::Colours::white.withAlpha(0.8f);
+    const juce::Colour nameColour = findColour(juce::Label::ColourIds::textWhenEditingColourId);
+    const juce::Colour valueColour = findColour(juce::Label::ColourIds::textColourId);
     constexpr auto fontSize = 20.0f; // TODO: Make font size variable
     const juce::Font nameFont = juce::FontOptions(fontSize, juce::Font::bold);
     const juce::Font valueFont = juce::FontOptions(fontSize, juce::Font::bold);

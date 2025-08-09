@@ -35,6 +35,8 @@ private:
 
     void valueChanged(juce::Value &value) override;
 
+    void setupLookAndFeel();
+
     void savePluginDescriptionToFile(const juce::String &description);
 
     juce::File m_lastDroppedFile;
