@@ -15,6 +15,7 @@ MainComponent::MainComponent()
 
     setupLookAndFeel();
 
+    addAndMakeVisible(m_idleInfo);
     addChildComponent(m_descriptionView);
     addAndMakeVisible(m_clearButton);
     addAndMakeVisible(m_copyButton);
@@ -43,6 +44,9 @@ MainComponent::MainComponent()
         savePluginDescriptionToFile(pluginDescription);
     };
 
+    m_idleInfo.setText("Drag in a plugin to get started!", juce::dontSendNotification);
+    m_idleInfo.setJustificationType(juce::Justification::centred);
+
     m_state.addListener(this);
     m_state = idle;
 }
@@ -69,19 +73,13 @@ void MainComponent::paint (juce::Graphics& g)
     }
 
     g.drawRect(getLocalBounds(), 2);
-
-    if (m_state == idle)
-    {
-        g.setFont (juce::FontOptions (16.0f));
-        g.setColour (juce::Colours::white);
-        g.drawText("Drag in a plugin to get started!", getLocalBounds(), juce::Justification::centred);
-    }
 }
 
 void MainComponent::resized()
 {
     constexpr int padding = 5;
     auto bounds = getLocalBounds().reduced(padding);
+    m_idleInfo.setBounds(bounds);
     m_descriptionView.setBounds(bounds);
 
     constexpr int buttonSize = 75;
@@ -184,6 +182,7 @@ void MainComponent::valueChanged(juce::Value &value)
         switch (state)
         {
             case idle:
+                m_idleInfo.setVisible(true);
                 m_lastDroppedFile = juce::File();
                 m_descriptionView.setVisible(false);
                 m_clearButton.setEnabled(false);
@@ -194,6 +193,7 @@ void MainComponent::valueChanged(juce::Value &value)
             case dragEnterInvalid:
                 break;
             case fileDropped:
+                m_idleInfo.setVisible(false);
                 m_descriptionView.setVisible(true);
                 m_clearButton.setEnabled(true);
                 m_copyButton.setEnabled(true);

@@ -46,6 +46,7 @@ private:
     juce::OwnedArray<juce::PluginDescription> m_descriptions;
     juce::AudioPluginFormatManager m_pluginFormatManager;
 
+    juce::Label m_idleInfo;
     DescriptionView m_descriptionView;
     juce::TextButton m_clearButton{"Clear"};
     juce::TextButton m_copyButton{"Copy"};
