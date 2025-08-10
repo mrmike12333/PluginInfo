@@ -59,8 +59,22 @@ juce::AttributedString DescriptionView::convertDescriptionToText() const
 
         juce::String formattedValue = attributeValue;
         // True/False flags replace 0 and 1 (but not num ins/outs!)
-        if (!attributeName.contains("num"))
+        if (attributeName.containsIgnoreCase("time"))
         {
+            if (attributeValue == "0")
+            {
+                // No use in showing 0 time.
+                continue;
+            }
+
+            // Time is in hex - convert
+            const auto time = attributeValue.getHexValue64();
+            const juce::Time timeMs {time};
+            formattedValue = timeMs.formatted("%H:%M: %Y/%m/%d");
+        }
+        else if (!attributeName.containsIgnoreCase("num"))
+        {
+            // Non-numerical values can be parsed as True/False
             if (formattedValue == "1")
             {
                 formattedValue = "True";
@@ -70,7 +84,7 @@ juce::AttributedString DescriptionView::convertDescriptionToText() const
             }
         }
 
-        formattedString.append(attributeName + " : ", nameFont, nameColour);
+        formattedString.append(attributeName + ": ", nameFont, nameColour);
         formattedString.append(formattedValue + "\n", valueFont, valueColour);
     }
 
