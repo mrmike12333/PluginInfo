@@ -15,6 +15,7 @@ MainComponent::MainComponent()
 
     setupLookAndFeel();
 
+    addChildComponent(m_toasterNotification);
     addAndMakeVisible(m_idleInfo);
     addChildComponent(m_descriptionView);
     addAndMakeVisible(m_clearButton);
@@ -35,7 +36,7 @@ MainComponent::MainComponent()
             juce::SystemClipboard::copyTextToClipboard(copiedString);
         }
 
-        // TODO: Tell user their string is copied to clipboard
+        m_toasterNotification.queueNotification("Copied plugin info to clipboard");
     };
 
     m_saveButton.onClick = [this]()
@@ -81,6 +82,8 @@ void MainComponent::resized()
     auto bounds = getLocalBounds().reduced(padding);
     m_idleInfo.setBounds(bounds);
     m_descriptionView.setBounds(bounds);
+
+    m_toasterNotification.setBounds(bounds.withSizeKeepingCentre(static_cast<int>(static_cast<float>(getWidth()) * 0.66f), static_cast<int>(static_cast<float>(getHeight()) * 0.25f)));
 
     constexpr int buttonSize = 75;
     auto buttonArea = bounds.removeFromBottom(buttonSize);
@@ -144,7 +147,8 @@ void MainComponent::filesDropped(const juce::StringArray &files, int, int)
 
     if (m_descriptions.isEmpty())
     {
-        // Loading the plugin failed
+        // Loading the plugin failed - TODO: Make this a lambda callback
+        m_toasterNotification.queueNotification("Error: Plugin load failed");
         m_state = idle;
         return;
     }
@@ -161,6 +165,7 @@ void MainComponent::filesDropped(const juce::StringArray &files, int, int)
     else
     {
         // Loading the plugin failed
+        m_toasterNotification.queueNotification("Error: Plugin load failed");
         m_state = idle;
         return;
     }
@@ -222,6 +227,9 @@ void MainComponent::setupLookAndFeel()
     lnf.setColour(juce::TextButton::ColourIds::textColourOnId, backgroundDark);
     lnf.setColour(juce::ComboBox::outlineColourId, backgroundDark);
 
+    lnf.setColour(ToasterNotification::ColourIds::BackgroundColourId, backgroundDark);
+    lnf.setColour(ToasterNotification::ColourIds::TextColourId, textMuted);
+
     // Piggybacking off existing colour IDs for description view
     lnf.setColour(juce::Label::ColourIds::textColourId, textMuted);
     lnf.setColour(juce::Label::ColourIds::textWhenEditingColourId, primary);
@@ -242,11 +250,11 @@ void MainComponent::savePluginDescriptionToFile(const juce::String &description)
         {
             if (locationToWrite.replaceWithText(description))
             {
-                // TODO: Tell user that it worked
+                m_toasterNotification.queueNotification("Saved plugin info to:\n" + locationToWrite.getFullPathName());
             }
             else
             {
-                // TODO: Tell user that it didn't work
+                m_toasterNotification.queueNotification("Error: failed to save file");
             }
         }
     }

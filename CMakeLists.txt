@@ -18,7 +18,8 @@ target_sources(PluginInfo
     PRIVATE
         src/Main.cpp
         src/MainComponent.cpp
-        src/DescriptionView.cpp)
+        src/DescriptionView.cpp
+        src/ToasterNotification.cpp)
 
 target_compile_definitions(PluginInfo
     PRIVATE
@@ -36,6 +37,7 @@ target_link_libraries(PluginInfo
         # GuiAppData            # If we'd created a binary data target, we'd link to it here
         juce::juce_gui_extra
         juce::juce_audio_processors
+        juce::juce_animation
     PUBLIC
         juce::juce_recommended_config_flags
         juce::juce_recommended_lto_flags

@@ -2,6 +2,7 @@
 #include <juce_gui_extra/juce_gui_extra.h>
 #include <juce_audio_processors/juce_audio_processors.h>
 #include "DescriptionView.h"
+#include "ToasterNotification.h"
 
 //==============================================================================
 /*
@@ -39,8 +40,6 @@ private:
 
     void savePluginDescriptionToFile(const juce::String &description);
 
-    juce::File m_lastDroppedFile;
-
     // Plugin format functionality
     juce::KnownPluginList m_pluginList;
     juce::OwnedArray<juce::PluginDescription> m_descriptions;
@@ -51,7 +50,9 @@ private:
     juce::TextButton m_clearButton{"Clear"};
     juce::TextButton m_copyButton{"Copy"};
     juce::TextButton m_saveButton{"Save"};
+    ToasterNotification m_toasterNotification;
 
+    juce::File m_lastDroppedFile;
     juce::Value m_state;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (MainComponent)
