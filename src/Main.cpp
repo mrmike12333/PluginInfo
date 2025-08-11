@@ -10,9 +10,15 @@ public:
     // We inject these as compile definitions from the CMakeLists.txt
     // If you've enabled the juce header with `juce_generate_juce_header(<thisTarget>)`
     // you could `#include <JuceHeader.h>` and use `ProjectInfo::projectName` etc. instead.
-    const juce::String getApplicationName() override       { return JUCE_APPLICATION_NAME_STRING; }
-    const juce::String getApplicationVersion() override    { return JUCE_APPLICATION_VERSION_STRING; }
-    bool moreThanOneInstanceAllowed() override             { return true; }
+    const juce::String getApplicationName() override
+    {
+        return JUCE_APPLICATION_NAME_STRING;
+    }
+    const juce::String getApplicationVersion() override
+    {
+        return JUCE_APPLICATION_VERSION_STRING;
+    }
+    bool moreThanOneInstanceAllowed() override { return true; }
 
     //==============================================================================
     void initialise (const juce::String& commandLine) override
@@ -43,7 +49,8 @@ public:
         // When another instance of the app is launched while this one is running,
         // this method is invoked, and the commandLine parameter tells you what
         // the other instance's command-line arguments were.
-        juce::ignoreUnused (commandLine); // TODO: Allow this app to be invoked on cmdline
+        juce::ignoreUnused (
+            commandLine); // TODO: Allow this app to be invoked on cmdline
     }
 
     //==============================================================================
@@ -56,20 +63,21 @@ public:
     public:
         explicit MainWindow (juce::String name)
             : DocumentWindow (name,
-                              juce::Desktop::getInstance().getDefaultLookAndFeel()
-                                                          .findColour (backgroundColourId),
+                              juce::Desktop::getInstance()
+                                  .getDefaultLookAndFeel()
+                                  .findColour (backgroundColourId),
                               allButtons)
         {
             setUsingNativeTitleBar (true);
             setContentOwned (new MainComponent(), true);
 
-           #if JUCE_IOS || JUCE_ANDROID
+#if JUCE_IOS || JUCE_ANDROID
             setFullScreen (true);
-           #else
+#else
             setResizable (true, true);
-            setResizeLimits(350, 450, 800, 1000);
+            setResizeLimits (350, 450, 800, 1000);
             centreWithSize (getWidth(), getHeight());
-           #endif
+#endif
 
             setVisible (true);
         }

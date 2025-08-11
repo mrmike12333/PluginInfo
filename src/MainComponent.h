@@ -1,15 +1,17 @@
 #pragma once
-#include <juce_gui_extra/juce_gui_extra.h>
-#include <juce_audio_processors/juce_audio_processors.h>
 #include "DescriptionView.h"
 #include "ToasterNotification.h"
+#include <juce_audio_processors/juce_audio_processors.h>
+#include <juce_gui_extra/juce_gui_extra.h>
 
 //==============================================================================
 /*
     This component lives inside our window, and this is where you should put all
     your controls and content.
 */
-class MainComponent final : public juce::Component, public juce::FileDragAndDropTarget, public juce::Value::Listener
+class MainComponent final : public juce::Component,
+                            public juce::FileDragAndDropTarget,
+                            public juce::Value::Listener
 {
 public:
     MainComponent();
@@ -26,19 +28,19 @@ public:
     void resized() override;
 
 private:
-    bool isInterestedInFileDrag(const juce::StringArray &files) override;
+    bool isInterestedInFileDrag (const juce::StringArray& files) override;
 
-    void fileDragEnter(const juce::StringArray &files, int x, int y) override;
+    void fileDragEnter (const juce::StringArray& files, int x, int y) override;
 
-    void filesDropped(const juce::StringArray &files, int x, int y) override;
+    void filesDropped (const juce::StringArray& files, int x, int y) override;
 
-    void fileDragExit(const juce::StringArray &files) override;
+    void fileDragExit (const juce::StringArray& files) override;
 
-    void valueChanged(juce::Value &value) override;
+    void valueChanged (juce::Value& value) override;
 
     void setupLookAndFeel();
 
-    void savePluginDescriptionToFile(const juce::String &description);
+    void savePluginDescriptionToFile (const juce::String& description);
 
     // Plugin format functionality
     juce::KnownPluginList m_pluginList;
@@ -47,9 +49,9 @@ private:
 
     juce::Label m_idleInfo;
     DescriptionView m_descriptionView;
-    juce::TextButton m_clearButton{"Clear"};
-    juce::TextButton m_copyButton{"Copy"};
-    juce::TextButton m_saveButton{"Save"};
+    juce::TextButton m_clearButton { "Clear" };
+    juce::TextButton m_copyButton { "Copy" };
+    juce::TextButton m_saveButton { "Save" };
     ToasterNotification m_toasterNotification;
 
     juce::File m_lastDroppedFile;
