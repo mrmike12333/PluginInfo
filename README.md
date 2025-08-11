@@ -1,6 +1,6 @@
 # Plugin Info
 
-A lightweight Juce App which displays information about a plugin.
+A lightweight Juce GUI App for inspecting audio plugin metadata.
 
 Plugin info analyses plugins on a file drop, where it performs a singular scan on your plugin.
 There's no caching, so the results are exactly what the plugin reports!
@@ -33,7 +33,7 @@ Plugin Info reports the [following information](https://docs.juce.com/master/cla
 - ARA Capability
 
 # Getting Started
-First you'll need JUCE, which is loaded in as a submodule
+After cloning the project, you'll need JUCE, which is loaded in as a submodule:
 
 ```bash
     git submodule update --init --recursive
