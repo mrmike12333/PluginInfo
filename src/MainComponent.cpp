@@ -3,7 +3,6 @@
 //==============================================================================
 MainComponent::MainComponent()
 {
-    // TODO: have minimum bounds on width/height
     setSize (600, 400);
     m_pluginFormatManager.addDefaultFormats();
 
@@ -45,7 +44,8 @@ MainComponent::MainComponent()
         savePluginDescriptionToFile (pluginDescription);
     };
 
-    m_idleInfo.setText ("Drag in a plugin to get started!",
+    m_idleInfo.setFont (juce::FontOptions (20.0f));
+    m_idleInfo.setText ("Drag in a plugin to get started",
                         juce::dontSendNotification);
     m_idleInfo.setJustificationType (juce::Justification::centred);
 
@@ -212,7 +212,7 @@ void MainComponent::valueChanged (juce::Value& value)
     }
 }
 
-void MainComponent::setupLookAndFeel()
+void MainComponent::setupLookAndFeel() const
 {
     auto& lnf = getLookAndFeel();
     const juce::Colour background = juce::Colour::fromRGB (125, 145, 126);

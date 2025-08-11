@@ -38,7 +38,7 @@ private:
 
     void valueChanged (juce::Value& value) override;
 
-    void setupLookAndFeel();
+    void setupLookAndFeel() const;
 
     void savePluginDescriptionToFile (const juce::String& description);
 
